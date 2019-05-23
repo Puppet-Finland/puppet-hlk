@@ -46,4 +46,18 @@ class hlk::client
     dsc_store      => 'TrustedPublisher',
     require        => File[$testcert],
   }
+
+  # Enable test signing
+  exec { 'enable-test-signing':
+    command  => file('hlk/enable-test-signing.ps1'),
+    creates  => 'C:\ProgramData\test-signing-is-enabled',
+    provider => powershell,
+  }
+
+  reboot { 'after-enabling-test-signing':
+    when      => 'refreshed',
+    apply     => 'finished',
+    message   => 'Rebooting to enable test signing',
+    subscribe => Exec['enable-test-signing'],
+  }
 }
