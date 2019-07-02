@@ -4,6 +4,8 @@
 #   File name of the test certificate
 # @param testcert_source
 #   Test certificate location (on the puppet fileserver)
+# @param testcert_thumbprint
+#   Test certificate thumbprint (value of "thumbprint" attribute of the certificate object in Powershell)
 # @param hlkinstall_drive_letter
 #   The drive letter of the HLKInstall network drive. For example "R". If this
 #   is defined the exported resource that would otherwise (try to)
@@ -13,6 +15,7 @@ class hlk::client
 (
   String           $testcert,
   String           $testcert_source,
+  String           $testcert_thumbprint,
   Optional[String] $hlkinstall_drive_letter = undef,
 )
 {
@@ -52,7 +55,7 @@ class hlk::client
 
   dsc_xcertificateimport { $testcert:
     dsc_ensure     => 'present',
-    dsc_thumbprint => '80FA0F185744F3AB7C5A63E66CB638CD00CA0F83',
+    dsc_thumbprint => $testcert_thumbprint,
     dsc_path       => "C:/ProgramData/${testcert}",
     dsc_location   => 'LocalMachine',
     dsc_store      => 'TrustedPublisher',
